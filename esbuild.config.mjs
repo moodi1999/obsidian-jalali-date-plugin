@@ -24,7 +24,15 @@ const context = await esbuild.context({
 				from: ['manifest.json'],
 				to: ['build/manifest.json'],
 			},
-			watch: true,
+			watch: false,
+		}),
+		copy({
+			resolveFrom: 'cwd',
+			assets: {
+				from: ['main.js'],
+				to: ['build/main.js'],
+			},
+			watch: false,
 		}),
 	],
 	bundle: true,
@@ -48,7 +56,7 @@ const context = await esbuild.context({
 	logLevel: "info",
 	sourcemap: dev ? "inline" : false,
 	treeShaking: true,
-	outfile: dev ? "main.js" : "/build/main.js",
+	outfile: "main.js",
 });
 
 if (dev) {
