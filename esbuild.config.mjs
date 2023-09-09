@@ -10,7 +10,7 @@ if you want to view the source, please visit the github repository of this plugi
 */
 `;
 
-const prod = (process.argv[2] === "production");
+const dev = (process.argv[2] === "development");
 
 const context = await esbuild.context({
 	banner: {
@@ -18,14 +18,6 @@ const context = await esbuild.context({
 	},
 	entryPoints: ["src/main.ts"],
 	plugins: [
-		copy({
-			resolveFrom: 'cwd',
-			assets: {
-				from: ['manifest.json'],
-				to: ['build/manifest.json'],
-			},
-			watch: true,
-		}),
 		copy({
 			resolveFrom: 'cwd',
 			assets: {
@@ -54,14 +46,14 @@ const context = await esbuild.context({
 	format: "cjs",
 	target: "es2018",
 	logLevel: "info",
-	sourcemap: prod ? false : "inline",
+	sourcemap: dev ? "inline" : false,
 	treeShaking: true,
-	outfile: prod? "/build/main.js" : "main.js",
+	outfile: dev ? "main.js" : "/build/main.js",
 });
 
-if (prod) {
+if (dev) {
+	await context.watch();
+} else {
 	await context.rebuild();
 	process.exit(0);
-} else {
-	await context.watch();
 }
